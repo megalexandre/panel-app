@@ -1,27 +1,78 @@
-import 'package:acal/validators/app_validators.dart';
+import 'package:acal/shared/validators/app_validators.dart';
 import 'package:flutter/material.dart';
 
 const double _desktopBreakpoint = 800;
 
-class Login extends StatefulWidget {
-  const Login({super.key});
+class LoginPage extends StatefulWidget {
+  const LoginPage({
+    super.key,
+    required this.onLogin,
+  });
+
+  final Future<void> Function({
+    required String email,
+    required String password,
+  }) onLogin;
 
   @override
-  State<Login> createState() => _LoginState();
+  State<LoginPage> createState() => _LoginPageState();
 }
 
-class _LoginState extends State<Login> {
+class _LoginPageState extends State<LoginPage> {
   final _formKey = GlobalKey<FormState>();
   final _emailContoller = TextEditingController();
   final _passwordController = TextEditingController();
 
   bool _obscurePassword = true;
+  bool _isSubmitting = false;
 
   @override
   void dispose() {
     _emailContoller.dispose();
     _passwordController.dispose();
     super.dispose();
+  }
+
+  Future<void> _submitLogin() async {
+    final isValid = _formKey.currentState!.validate();
+    final messenger = ScaffoldMessenger.of(context);
+
+    if (!isValid) {
+      messenger.hideCurrentSnackBar();
+      messenger.showSnackBar(
+        const SnackBar(
+          content: Text('Preencha os campos para continuar.'),
+        ),
+      );
+      return;
+    }
+
+    setState(() {
+      _isSubmitting = true;
+    });
+
+    try {
+      await widget.onLogin(
+        email: _emailContoller.text.trim(),
+        password: _passwordController.text,
+      );
+
+      messenger.hideCurrentSnackBar();
+      messenger.showSnackBar(
+        const SnackBar(content: Text('Login realizado com sucesso.')),
+      );
+    } catch (_) {
+      messenger.hideCurrentSnackBar();
+      messenger.showSnackBar(
+        const SnackBar(content: Text('Falha no login. Verifique os dados.')),
+      );
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isSubmitting = false;
+        });
+      }
+    }
   }
 
   @override
@@ -34,7 +85,20 @@ class _LoginState extends State<Login> {
         child: LayoutBuilder(
           builder: (context, constraints) {
             final isDesktop = constraints.maxWidth >= _desktopBreakpoint;
-            final content = _buildLoginForm(theme, isDesktop);
+            final content = _LoginForm(
+              formKey: _formKey,
+              emailController: _emailContoller,
+              passwordController: _passwordController,
+              obscurePassword: _obscurePassword,
+              onTogglePasswordVisibility: () {
+                setState(() {
+                  _obscurePassword = !_obscurePassword;
+                });
+              },
+              onSubmit: _submitLogin,
+              isDesktop: isDesktop,
+              isSubmitting: _isSubmitting,
+            );
 
             if (!isDesktop) {
               return Center(
@@ -88,12 +152,37 @@ class _LoginState extends State<Login> {
       ),
     );
   }
+}
 
-  Widget _buildLoginForm(ThemeData theme, bool isDesktop) {
+class _LoginForm extends StatelessWidget {
+  const _LoginForm({
+    required this.formKey,
+    required this.emailController,
+    required this.passwordController,
+    required this.obscurePassword,
+    required this.onTogglePasswordVisibility,
+    required this.onSubmit,
+    required this.isDesktop,
+    required this.isSubmitting,
+  });
+
+  final GlobalKey<FormState> formKey;
+  final TextEditingController emailController;
+  final TextEditingController passwordController;
+  final bool obscurePassword;
+  final VoidCallback onTogglePasswordVisibility;
+  final Future<void> Function() onSubmit;
+  final bool isDesktop;
+  final bool isSubmitting;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return ConstrainedBox(
       constraints: BoxConstraints(maxWidth: isDesktop ? 420 : 480),
       child: Form(
-        key: _formKey,
+        key: formKey,
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -113,25 +202,21 @@ class _LoginState extends State<Login> {
             ),
             const SizedBox(height: 24),
             TextFormField(
-              controller: _emailContoller,
+              controller: emailController,
               keyboardType: TextInputType.emailAddress,
               decoration: const InputDecoration(labelText: 'E-mail'),
               validator: AppValidators.email,
             ),
             const SizedBox(height: 12),
             TextFormField(
-              controller: _passwordController,
-              obscureText: _obscurePassword,
+              controller: passwordController,
+              obscureText: obscurePassword,
               decoration: InputDecoration(
                 labelText: 'Senha',
                 suffixIcon: IconButton(
-                  onPressed: () {
-                    setState(() {
-                      _obscurePassword = !_obscurePassword;
-                    });
-                  },
+                  onPressed: onTogglePasswordVisibility,
                   icon: Icon(
-                    _obscurePassword ? Icons.visibility : Icons.visibility_off,
+                    obscurePassword ? Icons.visibility : Icons.visibility_off,
                   ),
                 ),
               ),
@@ -146,22 +231,14 @@ class _LoginState extends State<Login> {
             SizedBox(
               height: 48,
               child: ElevatedButton(
-                onPressed: () {
-                  final isValid = _formKey.currentState!.validate();
-                  final messenger = ScaffoldMessenger.of(context);
-
-                  messenger.hideCurrentSnackBar();
-                  messenger.showSnackBar(
-                    SnackBar(
-                      content: Text(
-                        isValid
-                            ? 'Login enviado para validacao.'
-                            : 'Preencha os campos para continuar.',
-                      ),
-                    ),
-                  );
-                },
-                child: const Text('Login'),
+                onPressed: isSubmitting ? null : onSubmit,
+                child: isSubmitting
+                    ? const SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      )
+                    : const Text('Login'),
               ),
             ),
           ],
