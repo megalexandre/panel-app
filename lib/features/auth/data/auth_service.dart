@@ -3,10 +3,17 @@ import 'dart:convert';
 import 'package:acal/features/auth/data/auth_storage.dart';
 import 'package:acal/features/auth/domain/auth_tokens.dart';
 
+typedef LoginApiCall = Future<Map<String, dynamic>?> Function({
+  required String email,
+  required String password,
+});
+
 class AuthService {
   final AuthStorage _storage;
+  final LoginApiCall? _loginApiCall;
 
-  AuthService(this._storage);
+  AuthService(this._storage, {LoginApiCall? loginApiCall})
+      : _loginApiCall = loginApiCall;
 
   Future<bool> isAuthenticated() async {
     final token = await _storage.readAccessToken();
@@ -21,11 +28,18 @@ class AuthService {
       return false;
     }
 
-    // Stub de autenticacao: substitua pela chamada HTTP real.
-    final tokens = AuthTokens.fromResponse({
-      'token': _mockSpringBootJwt(email),
-      'type': 'Bearer',
-    });
+    final response = _loginApiCall != null
+        ? await _loginApiCall(email: email, password: password)
+        : {
+            'token': _mockSpringBootJwt(email),
+            'type': 'Bearer',
+          };
+
+    if (response == null) {
+      return false;
+    }
+
+    final tokens = AuthTokens.fromResponse(response);
 
     await _storage.saveTokens(
       tokens.accessToken,

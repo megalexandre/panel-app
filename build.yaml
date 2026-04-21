@@ -1,0 +1,15 @@
+targets:
+  $default:
+    sources:
+      - integration_test/**
+      - test/**
+      - lib/**
+      - pubspec.yaml
+      - $package$
+    builders:
+      bdd_widget_test|featureBuilder:
+        generate_for:
+          - integration_test/**/*.feature
+        options:
+          stepFolderName: ../steps
+

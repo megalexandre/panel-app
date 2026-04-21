@@ -4,7 +4,10 @@ import 'package:acal/features/auth/presentation/pages/login_page.dart';
 import 'package:flutter/material.dart';
 
 class AuthGate extends StatefulWidget {
-  const AuthGate({super.key});
+  const AuthGate({super.key, AuthService? authService})
+      : _authService = authService;
+
+  final AuthService? _authService;
 
   @override
   State<AuthGate> createState() => _AuthGateState();
@@ -12,7 +15,8 @@ class AuthGate extends StatefulWidget {
 
 class _AuthGateState extends State<AuthGate> {
   final AuthStorage _storage = AuthStorage();
-  late final AuthService _authService = AuthService(_storage);
+  late final AuthService _authService =
+      widget._authService ?? AuthService(_storage);
 
   bool? _authenticated;
 
