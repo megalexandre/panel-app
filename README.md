@@ -20,6 +20,24 @@ Se quiser logs mais detalhados das chamadas HTTP, incluindo um `curl` reproduziv
 make test-verbose
 ```
 
+Para debug rapido de um unico arquivo de teste:
+
+```bash
+make test-one FILE=login_test.dart
+```
+
+Para debug com logs expandidos e filtro por nome de cenario:
+
+```bash
+make test-debug FILE=login_test.dart NAME="Login with valid credentials should call API {1} time and redirect"
+```
+
+Para iniciar pausado e anexar debugger:
+
+```bash
+make test-debug-paused FILE=login_test.dart NAME="Login with valid credentials should call API {1} time and redirect"
+```
+
 Se quiser rodar manualmente, gere/atualize os arquivos derivados dos `.feature` e execute os testes:
 
 ```bash
