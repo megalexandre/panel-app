@@ -14,10 +14,11 @@ Feature: Login
         Then the authentication API should be called {1} time
         And I see {'Area autenticada'} text
 
-    Scenario: Login with invalid credentials should call API {0} time and stay on login
+    Scenario: Login with non-existing user should call API {1} time and stay on login
 
-        When I enter {'valido@mail.com'} text into {0} text field
+        When I enter {'naoexiste@mail.com'} text into {0} text field
         And I enter {'12345678'} text into {1} text field
         And I tap {'Login'} text
-        Then the authentication API should be called {0} time
+        Then the authentication API should be called {1} time
+        And I see {'Credenciais invalidas.'} text
         And I see {'Entrar'} text
