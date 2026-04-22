@@ -1,0 +1,48 @@
+{
+  "mappings": [
+    {
+      "id": "login-success",
+      "request": {
+        "method": "POST",
+        "url": "/login",
+        "bodyPatterns": [
+          {
+            "matchesJsonPath": "$.email",
+            "equalTo": "alexandre@mail.com"
+          },
+          {
+            "matchesJsonPath": "$.password",
+            "equalTo": "12345678"
+          }
+        ]
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "jsonBody": {
+          "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkFsZXhhbmRyZSIsImlhdCI6MTUxNjIzOTAyMn0.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c",
+          "type": "Bearer",
+          "expiresIn": 3600
+        }
+      }
+    },
+    {
+      "id": "login-invalid-credentials",
+      "request": {
+        "method": "POST",
+        "url": "/login"
+      },
+      "response": {
+        "status": 401,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "jsonBody": {
+          "error": "Invalid credentials"
+        }
+      }
+    }
+  ]
+}

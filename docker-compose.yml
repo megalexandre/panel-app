@@ -1,0 +1,18 @@
+version: '3.8'
+
+services:
+  wiremock:
+    image: wiremock/wiremock:3.0
+    container_name: acal-wiremock
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./wiremock/mappings:/home/wiremock/mappings
+      - ./wiremock/__files:/home/wiremock/__files
+    command: --port 8080
+    networks:
+      - acal-network
+
+networks:
+  acal-network:
+    driver: bridge
