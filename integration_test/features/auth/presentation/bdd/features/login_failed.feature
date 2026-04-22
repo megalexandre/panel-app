@@ -3,18 +3,18 @@ Feature: Login Failed And Validation
     Background:
         Given the login app is running
 
-    Scenario: Submit with empty fields shows required messages
-        
+    Scenario: Submit with empty fields should call API {0} time and show required messages
+
         When I tap {'Login'} text
         Then the authentication API should be called {0} time
         And I see {'Informe seu e-mail'} text
         And I see {'Informe sua senha'} text
         And I see {'Preencha os campos para continuar.'} text
 
-    Scenario Outline: Invalid email format blocks login
-        
+    Scenario Outline: Invalid email format should call API {0} time and block login
+
         When I enter {'<email>'} text into {0} text field
-        And I enter {'123456'} text into {1} text field
+        And I enter {'12345678'} text into {1} text field
         And I tap {'Login'} text
         Then the authentication API should be called {0} time
         And I see {'Informe um e-mail valido'} text
@@ -24,8 +24,10 @@ Feature: Login Failed And Validation
             | alex      |
             | alex@     |
             | alex@site |
+            | @mail.com |
+            
 
-    Scenario: Email with spaces is accepted after trim
+    Scenario: Email with spaces should call API {1} time and authenticate
         When I enter {'  alexandre@mail.com  '} text into {0} text field
         And I enter {'12345678'} text into {1} text field
         And I tap {'Login'} text

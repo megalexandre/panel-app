@@ -19,7 +19,8 @@ void main() {
       await theLoginAppIsRunning(tester);
     }
 
-    testWidgets('''Login with valid credentials calls API and redirects''',
+    testWidgets(
+        '''Login with valid credentials should call API {1} time and redirect''',
         (tester) async {
       await bddSetUp(tester);
       await iEnterTextIntoTextField(tester, 'alexandre@mail.com', 0);
@@ -28,7 +29,8 @@ void main() {
       await theAuthenticationApiShouldBeCalledTime(tester, 1);
       await iSeeText(tester, 'Area autenticada');
     });
-    testWidgets('''Login with invalid credentials does not call API''',
+    testWidgets(
+        '''Login with invalid credentials should call API {0} time and stay on login''',
         (tester) async {
       await bddSetUp(tester);
       await iEnterTextIntoTextField(tester, 'alex-site.com', 0);

@@ -19,7 +19,8 @@ void main() {
       await theLoginAppIsRunning(tester);
     }
 
-    testWidgets('''Submit with empty fields shows required messages''',
+    testWidgets(
+        '''Submit with empty fields should call API {0} time and show required messages''',
         (tester) async {
       await bddSetUp(tester);
       await iTapText(tester, 'Login');
@@ -28,34 +29,49 @@ void main() {
       await iSeeText(tester, 'Informe sua senha');
       await iSeeText(tester, 'Preencha os campos para continuar.');
     });
-    testWidgets('''Outline: Invalid email format blocks login (alex)''',
+    testWidgets(
+        '''Outline: Invalid email format should call API {0} time and block login (alex)''',
         (tester) async {
       await bddSetUp(tester);
       await iEnterTextIntoTextField(tester, 'alex', 0);
-      await iEnterTextIntoTextField(tester, '123456', 1);
+      await iEnterTextIntoTextField(tester, '12345678', 1);
       await iTapText(tester, 'Login');
       await theAuthenticationApiShouldBeCalledTime(tester, 0);
       await iSeeText(tester, 'Informe um e-mail valido');
     });
-    testWidgets('''Outline: Invalid email format blocks login (alex@)''',
+    testWidgets(
+        '''Outline: Invalid email format should call API {0} time and block login (alex@)''',
         (tester) async {
       await bddSetUp(tester);
       await iEnterTextIntoTextField(tester, 'alex@', 0);
-      await iEnterTextIntoTextField(tester, '123456', 1);
+      await iEnterTextIntoTextField(tester, '12345678', 1);
       await iTapText(tester, 'Login');
       await theAuthenticationApiShouldBeCalledTime(tester, 0);
       await iSeeText(tester, 'Informe um e-mail valido');
     });
-    testWidgets('''Outline: Invalid email format blocks login (alex@site)''',
+    testWidgets(
+        '''Outline: Invalid email format should call API {0} time and block login (alex@site)''',
         (tester) async {
       await bddSetUp(tester);
       await iEnterTextIntoTextField(tester, 'alex@site', 0);
-      await iEnterTextIntoTextField(tester, '123456', 1);
+      await iEnterTextIntoTextField(tester, '12345678', 1);
       await iTapText(tester, 'Login');
       await theAuthenticationApiShouldBeCalledTime(tester, 0);
       await iSeeText(tester, 'Informe um e-mail valido');
     });
-    testWidgets('''Email with spaces is accepted after trim''', (tester) async {
+    testWidgets(
+        '''Outline: Invalid email format should call API {0} time and block login (@mail.com)''',
+        (tester) async {
+      await bddSetUp(tester);
+      await iEnterTextIntoTextField(tester, '@mail.com', 0);
+      await iEnterTextIntoTextField(tester, '12345678', 1);
+      await iTapText(tester, 'Login');
+      await theAuthenticationApiShouldBeCalledTime(tester, 0);
+      await iSeeText(tester, 'Informe um e-mail valido');
+    });
+    testWidgets(
+        '''Email with spaces should call API {1} time and authenticate''',
+        (tester) async {
       await bddSetUp(tester);
       await iEnterTextIntoTextField(tester, '  alexandre@mail.com  ', 0);
       await iEnterTextIntoTextField(tester, '12345678', 1);

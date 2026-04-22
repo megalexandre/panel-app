@@ -6,7 +6,7 @@ Feature: Login
         Given the login app is running
 
 
-    Scenario: Login with valid credentials calls API and redirects
+    Scenario: Login with valid credentials should call API {1} time and redirect
 
         When I enter {'alexandre@mail.com'} text into {0} text field
         And I enter {'12345678'} text into {1} text field
@@ -14,7 +14,7 @@ Feature: Login
         Then the authentication API should be called {1} time
         And I see {'Area autenticada'} text
 
-    Scenario: Login with invalid credentials does not call API
+    Scenario: Login with invalid credentials should call API {0} time and stay on login
 
         When I enter {'alex-site.com'} text into {0} text field
         And I enter {'123456'} text into {1} text field
