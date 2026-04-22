@@ -6,11 +6,10 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
 
 import './../steps/the_login_app_is_running.dart';
-import '../steps/i_enter_text_into_text_field.dart';
-import '../steps/i_tap_text.dart';
+import './../steps/i_enter_text_into_text_field.dart';
+import './../steps/i_tap_text.dart';
 import './../steps/the_authentication_api_should_be_called_time.dart';
-import '../steps/i_see_text.dart';
-import './../steps/the_authentication_api_should_not_be_called.dart';
+import './../steps/i_see_text.dart';
 
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
@@ -35,7 +34,7 @@ void main() {
       await iEnterTextIntoTextField(tester, 'alex-site.com', 0);
       await iEnterTextIntoTextField(tester, '123456', 1);
       await iTapText(tester, 'Login');
-      await theAuthenticationApiShouldNotBeCalled(tester);
+      await theAuthenticationApiShouldBeCalledTime(tester, 0);
       await iSeeText(tester, 'Entrar');
     });
   });

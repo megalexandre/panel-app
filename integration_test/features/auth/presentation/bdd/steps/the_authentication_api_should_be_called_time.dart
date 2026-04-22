@@ -6,5 +6,6 @@ Future<void> theAuthenticationApiShouldBeCalledTime(
   WidgetTester tester,
   num expectedCalls,
 ) async {
-  expect(loginBddContext.apiSpy.calls, expectedCalls.toInt());
+  final actualCalls = await loginBddContext.loginCallsCount();
+  expect(actualCalls, expectedCalls.toInt());
 }

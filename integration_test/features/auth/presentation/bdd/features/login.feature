@@ -19,5 +19,5 @@ Feature: Login
         When I enter {'alex-site.com'} text into {0} text field
         And I enter {'123456'} text into {1} text field
         And I tap {'Login'} text
-        Then the authentication API should not be called
+        Then the authentication API should be called {0} time
         And I see {'Entrar'} text

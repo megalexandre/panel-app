@@ -2,6 +2,7 @@ import 'dart:convert';
 
 class AuthTokens {
   final String accessToken;
+  final String? refreshToken;
   final String tokenType;
   final String? subject;
   final DateTime? issuedAt;
@@ -9,6 +10,7 @@ class AuthTokens {
 
   const AuthTokens({
     required this.accessToken,
+    this.refreshToken,
     this.tokenType = 'Bearer',
     this.subject,
     this.issuedAt,
@@ -27,12 +29,14 @@ class AuthTokens {
 
   factory AuthTokens.fromJwt(
     String jwt, {
+    String? refreshToken,
     String tokenType = 'Bearer',
   }) {
     final payload = _parseJwtPayload(jwt);
 
     return AuthTokens(
       accessToken: jwt,
+      refreshToken: refreshToken,
       tokenType: tokenType,
       subject: payload['sub'] as String?,
       issuedAt: _parseUnixTimestamp(payload['iat']),
@@ -47,10 +51,12 @@ class AuthTokens {
       throw const FormatException('Resposta de autenticacao sem JWT valido.');
     }
 
+    final refreshToken = response['refresh_token'] ?? response['refreshToken'];
     final tokenType = response['type'] ?? response['token_type'] ?? response['tokenType'];
 
     return AuthTokens.fromJwt(
       token,
+      refreshToken: refreshToken is String && refreshToken.isNotEmpty ? refreshToken : null,
       tokenType: tokenType is String && tokenType.isNotEmpty ? tokenType : 'Bearer',
     );
   }

@@ -1,67 +1,106 @@
-import 'dart:convert';
-
+import 'package:acal/features/auth/data/auth_api_client.dart';
 import 'package:acal/features/auth/data/auth_storage.dart';
 import 'package:acal/features/auth/domain/auth_tokens.dart';
-
-typedef LoginApiCall = Future<Map<String, dynamic>?> Function({
-  required String email,
-  required String password,
-});
+import 'package:acal/features/auth/domain/auth_failure.dart';
+import 'package:acal/features/auth/domain/auth_result.dart';
+import 'package:acal/features/auth/domain/login_attempt.dart';
+import 'package:acal/shared/network/api_routes.dart';
 
 class AuthService {
   final AuthStorage _storage;
-  final LoginApiCall? _loginApiCall;
+  final AuthApiClient _apiClient;
 
-  AuthService(this._storage, {LoginApiCall? loginApiCall})
-      : _loginApiCall = loginApiCall;
+  AuthService(
+    this._storage, {
+    String baseUrl = ApiRoutes.defaultBaseUrl,
+    AuthApiClient? apiClient,
+  }) : _apiClient = apiClient ?? HttpAuthApiClient(baseUrl: baseUrl);
 
   Future<bool> isAuthenticated() async {
-    final token = await _storage.readAccessToken();
-    return token != null && token.isNotEmpty;
+    final accessToken = await _storage.readAccessToken();
+    if (accessToken == null || accessToken.isEmpty) {
+      return false;
+    }
+
+    try {
+      final access = AuthTokens.fromJwt(accessToken);
+      if (!access.isExpired) {
+        return true;
+      }
+    } on FormatException {
+      await _storage.clear();
+      return false;
+    }
+
+    final refreshToken = await _storage.readRefreshToken();
+    if (refreshToken == null || refreshToken.isEmpty) {
+      await _storage.clear();
+      return false;
+    }
+
+    final result = await _refreshSession(refreshToken);
+    return result.isSuccess;
   }
 
-  Future<bool> login({
-    required String email,
-    required String password,
-  }) async {
-    if (email.isEmpty || password.isEmpty) {
-      return false;
+  Future<AuthResult> login(LoginAttempt attempt) async {
+    if (!attempt.isValid) {
+      return const AuthResult.failure(
+        AuthFailure(
+          type: AuthFailureType.invalidInput,
+          message: 'Informe e-mail e senha.',
+        ),
+      );
     }
 
-    final response = _loginApiCall != null
-        ? await _loginApiCall(email: email, password: password)
-        : {
-            'token': _mockSpringBootJwt(email),
-            'type': 'Bearer',
-          };
-
-    if (response == null) {
-      return false;
+    try {
+      final response = await _apiClient.login(attempt);
+      final tokens = AuthTokens.fromResponse(response);
+      await _persistTokens(tokens);
+      return const AuthResult.success();
+    } on AuthApiClientException catch (error) {
+      return AuthResult.failure(
+        AuthFailure(type: error.type, message: error.message),
+      );
+    } on FormatException {
+      return const AuthResult.failure(
+        AuthFailure(
+          type: AuthFailureType.invalidResponse,
+          message: 'Resposta de autenticacao invalida.',
+        ),
+      );
     }
-
-    final tokens = AuthTokens.fromResponse(response);
-
-    await _storage.saveTokens(
-      tokens.accessToken,
-    );
-
-    return true;
   }
 
   Future<void> logout() async {
     await _storage.clear();
   }
 
-  String _mockSpringBootJwt(String email) {
-    final header = base64Url.encode(utf8.encode('{"alg":"HS256","typ":"JWT"}'));
-    final issuedAt = DateTime.now().millisecondsSinceEpoch ~/ 1000;
-    final expiresAt = issuedAt + 3600;
-    final payload = base64Url.encode(
-      utf8.encode(
-        '{"sub":"$email","iat":$issuedAt,"exp":$expiresAt}',
-      ),
-    );
+  Future<AuthResult> _refreshSession(String refreshToken) async {
+    try {
+      final response = await _apiClient.refresh(refreshToken);
+      final tokens = AuthTokens.fromResponse(response);
+      await _persistTokens(tokens);
+      return const AuthResult.success();
+    } on AuthApiClientException catch (error) {
+      await _storage.clear();
+      return AuthResult.failure(
+        AuthFailure(type: error.type, message: error.message),
+      );
+    } on FormatException {
+      await _storage.clear();
+      return const AuthResult.failure(
+        AuthFailure(
+          type: AuthFailureType.invalidResponse,
+          message: 'Resposta de refresh invalida.',
+        ),
+      );
+    }
+  }
 
-    return '${base64Url.normalize(header)}.${base64Url.normalize(payload)}.signature';
+  Future<void> _persistTokens(AuthTokens tokens) async {
+    await _storage.saveTokens(
+      tokens.accessToken,
+      refreshToken: tokens.refreshToken,
+    );
   }
 }

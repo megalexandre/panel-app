@@ -117,7 +117,7 @@ void main() {
       await tester.pump();
       await tester.pump(const Duration(seconds: 1));
 
-      expect(find.text('Falha no login. Verifique os dados.'), findsOneWidget);
+      expect(find.text('falha'), findsOneWidget);
       expect(find.byType(CircularProgressIndicator), findsNothing);
     });
   });

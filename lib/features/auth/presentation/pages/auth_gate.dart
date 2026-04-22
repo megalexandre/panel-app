@@ -1,5 +1,6 @@
 import 'package:acal/features/auth/data/auth_service.dart';
 import 'package:acal/features/auth/data/auth_storage.dart';
+import 'package:acal/features/auth/domain/login_attempt.dart';
 import 'package:acal/features/auth/presentation/pages/login_page.dart';
 import 'package:flutter/material.dart';
 
@@ -39,11 +40,12 @@ class _AuthGateState extends State<AuthGate> {
     required String email,
     required String password,
   }) async {
-    final success = await _authService.login(email: email, password: password);
+    final attempt = LoginAttempt(email: email, password: password);
+    final result = await _authService.login(attempt);
     if (!mounted) return;
 
-    if (!success) {
-      throw Exception('Credenciais invalidas.');
+    if (!result.isSuccess) {
+      throw Exception(result.failure?.message ?? 'Falha no login.');
     }
 
     setState(() {

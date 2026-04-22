@@ -61,10 +61,20 @@ class _LoginPageState extends State<LoginPage> {
       messenger.showSnackBar(
         const SnackBar(content: Text('Login realizado com sucesso.')),
       );
-    } catch (_) {
+    } catch (error) {
+      final message = error
+          .toString()
+          .replaceFirst('Exception: ', '')
+          .trim();
       messenger.hideCurrentSnackBar();
       messenger.showSnackBar(
-        const SnackBar(content: Text('Falha no login. Verifique os dados.')),
+        SnackBar(
+          content: Text(
+            message.isEmpty
+                ? 'Falha no login. Verifique os dados.'
+                : message,
+          ),
+        ),
       );
     } finally {
       if (mounted) {
