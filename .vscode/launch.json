@@ -1,0 +1,58 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Start App (Linux)",
+      "type": "dart",
+      "request": "launch",
+      "program": "lib/main.dart",
+      "flutterMode": "debug",
+      "toolArgs": [
+        "-d",
+        "linux"
+      ]
+    },
+    {
+      "name": "Debug Integration Test (arquivo atual)",
+      "type": "dart",
+      "request": "launch",
+      "program": "${file}",
+      "flutterMode": "debug",
+      "toolArgs": [
+        "-d",
+        "linux",
+        "--dart-define=AUTH_API_VERBOSE=1",
+        "--reporter",
+        "expanded"
+      ]
+    },
+    {
+      "name": "Debug Login Integration Test",
+      "type": "dart",
+      "request": "launch",
+      "program": "integration_test/features/auth/presentation/bdd/generated/login_test.dart",
+      "flutterMode": "debug",
+      "toolArgs": [
+        "-d",
+        "linux",
+        "--dart-define=AUTH_API_VERBOSE=1",
+        "--reporter",
+        "expanded"
+      ]
+    },
+    {
+      "name": "Debug Login Failed Integration Test",
+      "type": "dart",
+      "request": "launch",
+      "program": "integration_test/features/auth/presentation/bdd/generated/login_failed_test.dart",
+      "flutterMode": "debug",
+      "toolArgs": [
+        "-d",
+        "linux",
+        "--dart-define=AUTH_API_VERBOSE=1",
+        "--reporter",
+        "expanded"
+      ]
+    }
+  ]
+}

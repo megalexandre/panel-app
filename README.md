@@ -38,6 +38,25 @@ Para iniciar pausado e anexar debugger:
 make test-debug-paused FILE=login_test.dart NAME="Login with valid credentials should call API {1} time and redirect"
 ```
 
+### 2.1) Debug com breakpoints no VS Code
+
+Quando precisar inspecionar variaveis e navegar linha a linha, use o debugger do VS Code:
+
+1. Atualize os arquivos gerados:
+
+```bash
+dart run build_runner build --delete-conflicting-outputs
+```
+
+2. Abra um arquivo de teste gerado em `integration_test/features/auth/presentation/bdd/generated/`.
+3. Coloque breakpoints no proprio teste ou nos steps em `integration_test/features/auth/presentation/bdd/steps/`.
+4. Abra o painel Run and Debug e rode a configuracao `Debug Integration Test (arquivo atual)`.
+5. Passo de run de launch: pressione `F5` (ou clique em `Run and Debug` > botao `Start Debugging`) com a configuracao selecionada.
+
+Configuracoes prontas de debug ficam em `.vscode/launch.json`, incluindo atalhos para:
+- `Debug Login Integration Test`
+- `Debug Login Failed Integration Test`
+
 Se quiser rodar manualmente, gere/atualize os arquivos derivados dos `.feature` e execute os testes:
 
 ```bash
@@ -65,3 +84,7 @@ Se `xvfb-run` nao estiver instalado:
 ```bash
 sudo apt-get update && sudo apt-get install -y xvfb
 ```
+
+
+para gerar para android 
+flutter build apk --release

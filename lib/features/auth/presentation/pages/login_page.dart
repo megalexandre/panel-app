@@ -214,6 +214,12 @@ class _LoginForm extends StatelessWidget {
             TextFormField(
               controller: emailController,
               keyboardType: TextInputType.emailAddress,
+              textInputAction: TextInputAction.done,
+              onFieldSubmitted: (_) {
+                if (!isSubmitting) {
+                  onSubmit();
+                }
+              },
               decoration: const InputDecoration(labelText: 'E-mail'),
               validator: AppValidators.email,
             ),
@@ -221,6 +227,12 @@ class _LoginForm extends StatelessWidget {
             TextFormField(
               controller: passwordController,
               obscureText: obscurePassword,
+              textInputAction: TextInputAction.done,
+              onFieldSubmitted: (_) {
+                if (!isSubmitting) {
+                  onSubmit();
+                }
+              },
               decoration: InputDecoration(
                 labelText: 'Senha',
                 suffixIcon: IconButton(
