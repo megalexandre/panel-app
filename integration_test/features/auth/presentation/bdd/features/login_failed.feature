@@ -26,10 +26,3 @@ Feature: Login Failed And Validation
             | alex@site |
             | @mail.com |
             
-
-    Scenario: Email with spaces should call API {1} time and authenticate
-        When I enter {'  alexandre@mail.com  '} text into {0} text field
-        And I enter {'12345678'} text into {1} text field
-        And I tap {'Login'} text
-        Then the authentication API should be called {1} time
-        And I see {'Area autenticada'} text

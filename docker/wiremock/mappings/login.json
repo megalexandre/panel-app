@@ -1,6 +1,8 @@
 {
   "mappings": [
+
     {
+      "id" : "441a090a-58a7-4e6c-9daf-64e0b494cbaa",
       "priority": 1,
       "request": {
         "method": "POST",
@@ -27,6 +29,7 @@
       }
     },
     {
+      "id" : "56337082-d43c-464d-a1ef-85b764e1352b",
       "priority": 10,
       "request": {
         "method": "POST",

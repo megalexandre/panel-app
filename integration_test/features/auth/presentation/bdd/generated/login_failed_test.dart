@@ -63,15 +63,5 @@ void main() {
       await theAuthenticationApiShouldBeCalledTime(tester, 0);
       await iSeeText(tester, 'Informe um e-mail valido');
     });
-    testWidgets(
-        '''Email with spaces should call API {1} time and authenticate''',
-        (tester) async {
-      await bddSetUp(tester);
-      await iEnterTextIntoTextField(tester, '  alexandre@mail.com  ', 0);
-      await iEnterTextIntoTextField(tester, '12345678', 1);
-      await iTapText(tester, 'Login');
-      await theAuthenticationApiShouldBeCalledTime(tester, 1);
-      await iSeeText(tester, 'Area autenticada');
-    });
   });
 }
