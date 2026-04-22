@@ -1,16 +1,18 @@
 {
   "mappings": [
     {
-      "priority": 1,
+      "id": "login-success",
       "request": {
         "method": "POST",
         "url": "/login",
         "bodyPatterns": [
           {
-            "matchesJsonPath": "$[?(@.email == 'alexandre@mail.com')]"
+            "matchesJsonPath": "$.email",
+            "equalTo": "alexandre@mail.com"
           },
           {
-            "matchesJsonPath": "$[?(@.password == '12345678')]"
+            "matchesJsonPath": "$.password",
+            "equalTo": "12345678"
           }
         ]
       },
@@ -27,7 +29,7 @@
       }
     },
     {
-      "priority": 10,
+      "id": "login-invalid-credentials",
       "request": {
         "method": "POST",
         "url": "/login"

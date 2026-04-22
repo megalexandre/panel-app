@@ -4,9 +4,6 @@ set -euo pipefail
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$ROOT_DIR"
 
-echo "[1/4] Starting WireMock..."
-docker compose up -d wiremock
-
 echo "[2/4] Generating BDD test code..."
 dart run build_runner build --delete-conflicting-outputs
 

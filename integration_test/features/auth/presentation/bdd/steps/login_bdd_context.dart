@@ -51,6 +51,57 @@ class LoginBddContext {
 
     return count;
   }
+
+  Future<String?> lastLoginCurl() async {
+    final response = await http.post(
+      Uri.parse('$wiremockBaseUrl/__admin/requests/find'),
+      headers: const {'Content-Type': 'application/json'},
+      body: '{"method":"POST","url":"/login"}',
+    );
+
+    if (response.statusCode < 200 || response.statusCode >= 300) {
+      throw Exception('Falha ao consultar requests do WireMock: ${response.statusCode}.');
+    }
+
+    final decoded = jsonDecode(response.body);
+    if (decoded is! Map<String, dynamic>) {
+      throw const FormatException('Resposta invalida do WireMock admin para find.');
+    }
+
+    final requests = decoded['requests'];
+    if (requests is! List || requests.isEmpty) {
+      return null;
+    }
+
+    final last = requests.last;
+    if (last is! Map<String, dynamic>) {
+      return null;
+    }
+
+    final request = last['request'];
+    if (request is! Map<String, dynamic>) {
+      return null;
+    }
+
+    final url = request['url'];
+    if (url is! String) {
+      return null;
+    }
+
+    String body = '';
+    final rawBody = request['body'];
+    if (rawBody is String) {
+      body = rawBody;
+    } else {
+      final bodyAsBase64 = request['bodyAsBase64'];
+      if (bodyAsBase64 is String && bodyAsBase64.isNotEmpty) {
+        body = utf8.decode(base64Decode(bodyAsBase64));
+      }
+    }
+
+    final escapedBody = body.replaceAll("'", "'\"'\"'");
+    return "curl -i -X POST '$wiremockBaseUrl$url' -H 'Content-Type: application/json' -d '$escapedBody'";
+  }
 }
 
 final loginBddContext = LoginBddContext();

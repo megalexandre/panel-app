@@ -16,8 +16,8 @@ Feature: Login
 
     Scenario: Login with invalid credentials should call API {0} time and stay on login
 
-        When I enter {'alex-site.com'} text into {0} text field
-        And I enter {'123456'} text into {1} text field
+        When I enter {'valido@mail.com'} text into {0} text field
+        And I enter {'12345678'} text into {1} text field
         And I tap {'Login'} text
         Then the authentication API should be called {0} time
         And I see {'Entrar'} text

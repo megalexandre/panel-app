@@ -8,10 +8,16 @@ docker compose up -d wiremock
 
 ### 2) Rodar teste de integracao (Linux)
 
-Use o script abaixo para rodar tudo de forma sequencial e estavel (WireMock + build_runner + testes):
+Use o alvo abaixo para rodar tudo de forma sequencial e estavel (WireMock + build_runner + testes):
 
 ```bash
-./scripts/run_integration_tests.sh
+make test
+```
+
+Se quiser logs mais detalhados das chamadas HTTP, incluindo um `curl` reproduzivel para cada request:
+
+```bash
+make test-verbose
 ```
 
 Se quiser rodar manualmente, gere/atualize os arquivos derivados dos `.feature` e execute os testes:
@@ -27,7 +33,13 @@ flutter test integration_test -d linux
 ### 3) Rodar em modo headless (CI/Linux sem display)
 
 ```bash
-xvfb-run -a flutter test integration_test -d linux
+make test-headless
+```
+
+Modo headless com logs verbosos:
+
+```bash
+make test-headless-verbose
 ```
 
 Se `xvfb-run` nao estiver instalado:

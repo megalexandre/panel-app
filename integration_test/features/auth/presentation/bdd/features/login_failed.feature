@@ -3,7 +3,7 @@ Feature: Login Failed And Validation
     Background:
         Given the login app is running
 
-    Scenario: Submit with empty fields should call API {0} time and show required messages
+    Scenario: Submit with empty fields should fail
 
         When I tap {'Login'} text
         Then the authentication API should be called {0} time
@@ -11,7 +11,7 @@ Feature: Login Failed And Validation
         And I see {'Informe sua senha'} text
         And I see {'Preencha os campos para continuar.'} text
 
-    Scenario Outline: Invalid email format should call API {0} time and block login
+    Scenario Outline: Invalid email format should fail
 
         When I enter {'<email>'} text into {0} text field
         And I enter {'12345678'} text into {1} text field
