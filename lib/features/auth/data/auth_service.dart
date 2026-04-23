@@ -13,9 +13,10 @@ class AuthService {
 
   AuthService(
     this._storage, {
-    String baseUrl = ApiRoutes.defaultBaseUrl,
+    String? baseUrl,
     AuthApiClient? apiClient,
-  }) : _apiClient = apiClient ?? HttpAuthApiClient(baseUrl: baseUrl);
+  }) : _apiClient =
+           apiClient ?? HttpAuthApiClient(baseUrl: baseUrl ?? ApiRoutes.defaultBaseUrl);
 
   Future<bool> isAuthenticated() async {
     final accessToken = await _storage.readAccessToken();

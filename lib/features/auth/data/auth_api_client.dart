@@ -26,9 +26,9 @@ class HttpAuthApiClient implements AuthApiClient {
   final http.Client _httpClient;
 
   HttpAuthApiClient({
-    String baseUrl = ApiRoutes.defaultBaseUrl,
+    String? baseUrl,
     http.Client? httpClient,
-  })  : _baseUrl = baseUrl,
+  })  : _baseUrl = baseUrl ?? ApiRoutes.defaultBaseUrl,
         _httpClient = httpClient ?? http.Client();
 
   @override
