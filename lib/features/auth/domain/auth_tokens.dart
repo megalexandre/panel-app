@@ -34,11 +34,14 @@ class AuthTokens {
   }) {
     final payload = _parseJwtPayload(jwt);
 
+    final subject = payload['sub'] as String?
+        ?? payload['user_id'] as String?;
+
     return AuthTokens(
       accessToken: jwt,
       refreshToken: refreshToken,
       tokenType: tokenType,
-      subject: payload['sub'] as String?,
+      subject: subject,
       issuedAt: _parseUnixTimestamp(payload['iat']),
       expiresAt: _parseUnixTimestamp(payload['exp']),
     );
@@ -54,11 +57,29 @@ class AuthTokens {
     final refreshToken = response['refresh_token'] ?? response['refreshToken'];
     final tokenType = response['type'] ?? response['token_type'] ?? response['tokenType'];
 
-    return AuthTokens.fromJwt(
+    final tokens = AuthTokens.fromJwt(
       token,
       refreshToken: refreshToken is String && refreshToken.isNotEmpty ? refreshToken : null,
       tokenType: tokenType is String && tokenType.isNotEmpty ? tokenType : 'Bearer',
     );
+
+    final expiresAtRaw = response['expires_at'] ?? response['expiresAt'];
+    final expiresAt = expiresAtRaw is String
+        ? DateTime.tryParse(expiresAtRaw)?.toLocal()
+        : null;
+
+    if (expiresAt != null) {
+      return AuthTokens(
+        accessToken: tokens.accessToken,
+        refreshToken: tokens.refreshToken,
+        tokenType: tokens.tokenType,
+        subject: tokens.subject,
+        issuedAt: tokens.issuedAt,
+        expiresAt: expiresAt,
+      );
+    }
+
+    return tokens;
   }
 
   static Map<String, dynamic> _parseJwtPayload(String jwt) {

@@ -8,6 +8,7 @@ import 'package:http/http.dart' as http;
 abstract class AuthApiClient {
   Future<Map<String, dynamic>> login(LoginAttempt attempt);
   Future<Map<String, dynamic>> refresh(String refreshToken);
+  Future<Map<String, dynamic>> getMe(String accessToken);
 }
 
 class AuthApiClientException implements Exception {
@@ -33,7 +34,7 @@ class HttpAuthApiClient implements AuthApiClient {
   @override
   Future<Map<String, dynamic>> login(LoginAttempt attempt) {
     return _postJson(
-      Uri.parse('$_baseUrl/login'),
+      Uri.parse('$_baseUrl/auth/login'),
       {'email': attempt.email, 'password': attempt.password},
       unauthorizedMessage: 'Credenciais invalidas.',
     );
@@ -42,11 +43,62 @@ class HttpAuthApiClient implements AuthApiClient {
   @override
   Future<Map<String, dynamic>> refresh(String refreshToken) {
     return _postJson(
-      Uri.parse('$_baseUrl/refresh'),
+      Uri.parse('$_baseUrl/auth/refresh'),
       {'refresh_token': refreshToken},
       unauthorizedMessage: 'Sessao expirada. Faca login novamente.',
       unauthorizedType: AuthFailureType.sessionExpired,
     );
+  }
+
+  @override
+  Future<Map<String, dynamic>> getMe(String accessToken) {
+    return _getJson(
+      Uri.parse('$_baseUrl/users/me'),
+      accessToken: accessToken,
+    );
+  }
+
+  Future<Map<String, dynamic>> _getJson(
+    Uri uri, {
+    required String accessToken,
+  }) async {
+    http.Response response;
+
+    try {
+      response = await _httpClient.get(
+        uri,
+        headers: {'Authorization': 'Bearer $accessToken'},
+      );
+    } catch (_) {
+      throw const AuthApiClientException(
+        type: AuthFailureType.network,
+        message: 'Falha de rede ao conectar no servidor.',
+      );
+    }
+
+    if (response.statusCode == 401) {
+      throw const AuthApiClientException(
+        type: AuthFailureType.sessionExpired,
+        message: 'Sessao expirada. Faca login novamente.',
+      );
+    }
+
+    if (response.statusCode < 200 || response.statusCode >= 300) {
+      throw const AuthApiClientException(
+        type: AuthFailureType.server,
+        message: 'Falha no servidor.',
+      );
+    }
+
+    final decoded = jsonDecode(response.body);
+    if (decoded is! Map<String, dynamic>) {
+      throw const AuthApiClientException(
+        type: AuthFailureType.invalidResponse,
+        message: 'Resposta invalida da API.',
+      );
+    }
+
+    return decoded;
   }
 
   Future<Map<String, dynamic>> _postJson(

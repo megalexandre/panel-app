@@ -4,6 +4,7 @@ import 'package:acal/features/auth/domain/auth_tokens.dart';
 import 'package:acal/features/auth/domain/auth_failure.dart';
 import 'package:acal/features/auth/domain/auth_result.dart';
 import 'package:acal/features/auth/domain/login_attempt.dart';
+import 'package:acal/features/auth/domain/user_profile.dart';
 import 'package:acal/shared/network/api_routes.dart';
 
 class AuthService {
@@ -102,5 +103,18 @@ class AuthService {
       tokens.accessToken,
       refreshToken: tokens.refreshToken,
     );
+  }
+
+  Future<UserProfile> getMe() async {
+    final accessToken = await _storage.readAccessToken();
+    if (accessToken == null || accessToken.isEmpty) {
+      throw const AuthApiClientException(
+        type: AuthFailureType.sessionExpired,
+        message: 'Sessao expirada. Faca login novamente.',
+      );
+    }
+
+    final response = await _apiClient.getMe(accessToken);
+    return UserProfile.fromJson(response);
   }
 }
