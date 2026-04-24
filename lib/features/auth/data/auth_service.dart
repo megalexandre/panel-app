@@ -5,18 +5,12 @@ import 'package:acal/features/auth/domain/auth_failure.dart';
 import 'package:acal/features/auth/domain/auth_result.dart';
 import 'package:acal/features/auth/domain/login_attempt.dart';
 import 'package:acal/features/auth/domain/user_profile.dart';
-import 'package:acal/shared/network/api_routes.dart';
-
 class AuthService {
   final AuthStorage _storage;
   final AuthApiClient _apiClient;
 
-  AuthService(
-    this._storage, {
-    String? baseUrl,
-    AuthApiClient? apiClient,
-  }) : _apiClient =
-           apiClient ?? HttpAuthApiClient(baseUrl: baseUrl ?? ApiRoutes.defaultBaseUrl);
+  AuthService(this._storage, {AuthApiClient? apiClient})
+      : _apiClient = apiClient ?? HttpAuthApiClient();
 
   Future<bool> isAuthenticated() async {
     final accessToken = await _storage.readAccessToken();
@@ -117,5 +111,16 @@ class AuthService {
 
     final response = await _apiClient.getMe(accessToken);
     return UserProfile.fromJson(response);
+  }
+
+  Future<String?> currentUserEmail() async {
+    final accessToken = await _storage.readAccessToken();
+    if (accessToken == null || accessToken.isEmpty) return null;
+    try {
+      final tokens = AuthTokens.fromJwt(accessToken);
+      return tokens.email;
+    } on FormatException {
+      return null;
+    }
   }
 }

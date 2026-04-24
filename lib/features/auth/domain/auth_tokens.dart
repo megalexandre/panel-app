@@ -5,6 +5,7 @@ class AuthTokens {
   final String? refreshToken;
   final String tokenType;
   final String? subject;
+  final String? email;
   final DateTime? issuedAt;
   final DateTime? expiresAt;
 
@@ -13,6 +14,7 @@ class AuthTokens {
     this.refreshToken,
     this.tokenType = 'Bearer',
     this.subject,
+    this.email,
     this.issuedAt,
     this.expiresAt,
   });
@@ -36,12 +38,14 @@ class AuthTokens {
 
     final subject = payload['sub'] as String?
         ?? payload['user_id'] as String?;
+    final email = payload['email'] as String?;
 
     return AuthTokens(
       accessToken: jwt,
       refreshToken: refreshToken,
       tokenType: tokenType,
       subject: subject,
+      email: email,
       issuedAt: _parseUnixTimestamp(payload['iat']),
       expiresAt: _parseUnixTimestamp(payload['exp']),
     );
@@ -74,6 +78,7 @@ class AuthTokens {
         refreshToken: tokens.refreshToken,
         tokenType: tokens.tokenType,
         subject: tokens.subject,
+        email: tokens.email,
         issuedAt: tokens.issuedAt,
         expiresAt: expiresAt,
       );

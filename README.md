@@ -182,3 +182,17 @@ Painel do WireMock:
 ```text
 http://localhost:8080/__admin/mappings
 ```
+
+
+-- para testar no emulador
+flutter emulators --launch Pixel_6
+flutter run -d Pixel_6
+
+-- build web
+fluter build web
+docker build -t alexandreqrz/app-panel-web:latest . 
+docker push alexandreqrz/app-panel-web:latest
+
+-- build android 
+flutter pub get
+flutter build apk --release --dart-define=API_BASE_URL=https://app.project-deploy.shop/api/api

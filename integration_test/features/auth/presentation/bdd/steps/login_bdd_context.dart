@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:acal/features/auth/data/auth_api_client.dart';
 import 'package:acal/features/auth/data/auth_service.dart';
 import 'package:acal/features/auth/data/auth_storage.dart';
 import 'package:http/http.dart' as http;
@@ -10,7 +11,7 @@ class LoginBddContext {
 
   late AuthService authService = AuthService(
     AuthStorage(),
-    baseUrl: wiremockBaseUrl,
+    apiClient: HttpAuthApiClient(baseUrl: wiremockBaseUrl),
   );
 
   Future<void> reset() async {
@@ -18,7 +19,7 @@ class LoginBddContext {
     await _resetWireMockRequests();
     authService = AuthService(
       AuthStorage(),
-      baseUrl: wiremockBaseUrl,
+      apiClient: HttpAuthApiClient(baseUrl: wiremockBaseUrl),
     );
   }
 

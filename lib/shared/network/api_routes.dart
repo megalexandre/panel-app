@@ -1,14 +1,6 @@
 class ApiRoutes {
-  static const String _runtimeBaseUrl = String.fromEnvironment(
+  static const String defaultBaseUrl = String.fromEnvironment(
     'API_BASE_URL',
-    defaultValue: '__RUNTIME_API_BASE_URL__',
+    defaultValue: 'https://app.project-deploy.shop/api/api',
   );
-
-  static String get defaultBaseUrl {
-    if (_runtimeBaseUrl.startsWith('__RUNTIME_')) {
-      return 'https://app.project-deploy.shop/api';
-    }
-
-    return _runtimeBaseUrl;
-  }
 }
