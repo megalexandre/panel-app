@@ -38,6 +38,7 @@ class _DashboardPageState extends State<DashboardPage> {
     final isDesktop = MediaQuery.sizeOf(context).width >= _desktopBreakpoint;
 
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: DashboardTopBar(onLogout: widget.onLogout),
       drawer: isDesktop
           ? null

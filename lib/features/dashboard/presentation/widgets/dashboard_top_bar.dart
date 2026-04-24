@@ -11,13 +11,15 @@ class DashboardTopBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final appBarForeground =
+        theme.appBarTheme.foregroundColor ?? theme.colorScheme.onSurface;
 
     return AppBar(
       title: Text(
         'Dashboard',
         style: theme.textTheme.titleMedium?.copyWith(
           fontWeight: FontWeight.w700,
-          color: theme.colorScheme.onPrimary,
+          color: appBarForeground,
         ),
       ),
       actions: [

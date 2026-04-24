@@ -9,8 +9,7 @@ class AcalApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: AcalTheme.light,
-      darkTheme: AcalTheme.dark,
-      themeMode: ThemeMode.system,
+      themeMode: ThemeMode.light,
       home: const AuthGate(),
     );
   }

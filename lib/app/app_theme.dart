@@ -1,15 +1,73 @@
 import 'package:flutter/material.dart';
 
-/// Paleta inspirada no tema Dark+ do VS Code.
+/// Paleta de cores completa do design system.
+abstract final class AcalPalette {
+  // Primary
+  static const primary100 = Color(0xFFE6EFFF);
+  static const primary200 = Color(0xFFC2D6FF);
+  static const primary300 = Color(0xFF99B8FF);
+  static const primary400 = Color(0xFF6690FF);
+  static const primary500 = Color(0xFF3366FF);
+  static const primary600 = Color(0xFF254EDB);
+  static const primary700 = Color(0xFF1938B8);
+  static const primary800 = Color(0xFF102494);
+  static const primary900 = Color(0xFF091370);
+
+  // Success
+  static const success100 = Color(0xFFF1FCE3);
+  static const success200 = Color(0xFFDAF7B8);
+  static const success300 = Color(0xFFC2F08C);
+  static const success400 = Color(0xFFA8EA5C);
+  static const success500 = Color(0xFF8BE218);
+  static const success600 = Color(0xFF6CBF10);
+  static const success700 = Color(0xFF509C09);
+  static const success800 = Color(0xFF367A04);
+  static const success900 = Color(0xFF205701);
+
+  // Info
+  static const info100 = Color(0xFFE3F6FE);
+  static const info200 = Color(0xFFB8E8FD);
+  static const info300 = Color(0xFF8AD9FC);
+  static const info400 = Color(0xFF5CC9FA);
+  static const info500 = Color(0xFF45BEF7);
+  static const info600 = Color(0xFF3095D4);
+  static const info700 = Color(0xFF1F6FB0);
+  static const info800 = Color(0xFF114D8C);
+  static const info900 = Color(0xFF062F69);
+
+  // Warning
+  static const warning100 = Color(0xFFFFF6E5);
+  static const warning200 = Color(0xFFFFE6B8);
+  static const warning300 = Color(0xFFFFD48A);
+  static const warning400 = Color(0xFFFFC15C);
+  static const warning500 = Color(0xFFFFB83F);
+  static const warning600 = Color(0xFFDB932A);
+  static const warning700 = Color(0xFFB87219);
+  static const warning800 = Color(0xFF94530B);
+  static const warning900 = Color(0xFF703803);
+
+  // Danger
+  static const danger100 = Color(0xFFFFE8E5);
+  static const danger200 = Color(0xFFFFC2B8);
+  static const danger300 = Color(0xFFFF988A);
+  static const danger400 = Color(0xFFFF6C5C);
+  static const danger500 = Color(0xFFFF4032);
+  static const danger600 = Color(0xFFDB2721);
+  static const danger700 = Color(0xFFB81514);
+  static const danger800 = Color(0xFF94080B);
+  static const danger900 = Color(0xFF700206);
+}
+
+/// Tokens semânticos — tema dark.
 abstract final class AcalColors {
-  // --- Primária (azul VS Code) ---
-  static const primary = Color(0xFF007ACC);
+  // --- Primária ---
+  static const primary = AcalPalette.primary500;
   static const onPrimary = Color(0xFFFFFFFF);
-  static const primaryContainer = Color(0xFF0E639C);
-  static const onPrimaryContainer = Color(0xFFCCE5FF);
+  static const primaryContainer = AcalPalette.primary700;
+  static const onPrimaryContainer = AcalPalette.primary100;
 
   // --- Secundária ---
-  static const secondary = Color(0xFF0E639C);
+  static const secondary = AcalPalette.primary600;
   static const onSecondary = Color(0xFFFFFFFF);
   static const secondaryContainer = Color(0xFF252526); // sidebar dark
   static const onSecondaryContainer = Color(0xFFCCCCCC);
@@ -23,32 +81,49 @@ abstract final class AcalColors {
   static const outline = Color(0xFF474747);
   static const outlineVariant = Color(0xFF3C3C3C);
 
-  // --- Erro ---
-  static const error = Color(0xFFF48771);
+  // --- Semânticas ---
+  static const error = AcalPalette.danger400;
   static const onError = Color(0xFF1E1E1E);
+  static const success = AcalPalette.success500;
+  static const onSuccess = Color(0xFF1E1E1E);
+  static const info = AcalPalette.info500;
+  static const onInfo = Color(0xFF1E1E1E);
+  static const warning = AcalPalette.warning500;
+  static const onWarning = Color(0xFF1E1E1E);
 }
 
-/// Paleta light: tons frios e neutros, mesmo azul primário.
+/// Tokens semânticos — tema light.
 abstract final class AcalLightColors {
-  static const primary = Color(0xFF007ACC);
+  // --- Primária ---
+  static const primary = AcalPalette.primary500;
   static const onPrimary = Color(0xFFFFFFFF);
-  static const primaryContainer = Color(0xFFD0E8F8);
-  static const onPrimaryContainer = Color(0xFF003E6B);
+  static const primaryContainer = AcalPalette.primary100;
+  static const onPrimaryContainer = AcalPalette.primary900;
 
-  static const secondary = Color(0xFF0E639C);
+  // --- Secundária ---
+  static const secondary = AcalPalette.primary600;
   static const onSecondary = Color(0xFFFFFFFF);
-  static const secondaryContainer = Color(0xFFE8F0F8); // sidebar light
-  static const onSecondaryContainer = Color(0xFF003E6B);
+  static const secondaryContainer = Color(0xFFEEF3FF); // sidebar light
+  static const onSecondaryContainer = AcalPalette.primary900;
 
+  // --- Superfícies light ---
   static const surface = Color(0xFFF3F3F3);
   static const onSurface = Color(0xFF1E1E1E);
   static const surfaceContainerHighest = Color(0xFFE8E8E8);
 
+  // --- Outline ---
   static const outline = Color(0xFFBDBDBD);
   static const outlineVariant = Color(0xFFD4D4D4);
 
-  static const error = Color(0xFFCD3131);
+  // --- Semânticas ---
+  static const error = AcalPalette.danger600;
   static const onError = Color(0xFFFFFFFF);
+  static const success = AcalPalette.success600;
+  static const onSuccess = Color(0xFFFFFFFF);
+  static const info = AcalPalette.info700;
+  static const onInfo = Color(0xFFFFFFFF);
+  static const warning = AcalPalette.warning600;
+  static const onWarning = Color(0xFFFFFFFF);
 }
 
 abstract final class AcalTheme {
@@ -85,7 +160,7 @@ abstract final class AcalTheme {
       ),
       navigationRailTheme: const NavigationRailThemeData(
         backgroundColor: AcalColors.secondaryContainer,
-        indicatorColor: Color(0xFF094771),
+        indicatorColor: AcalPalette.primary800,
         selectedIconTheme: IconThemeData(color: AcalColors.onSurface),
         unselectedIconTheme: IconThemeData(color: Color(0xFF858585)),
         selectedLabelTextStyle: TextStyle(
@@ -122,7 +197,7 @@ abstract final class AcalTheme {
         titleLarge: TextStyle(color: AcalColors.onSurface),
       ),
       listTileTheme: const ListTileThemeData(
-        selectedTileColor: Color(0xFF094771),
+        selectedTileColor: AcalPalette.primary800,
         selectedColor: AcalColors.onSurface,
         textColor: Color(0xFFCCCCCC),
         iconColor: Color(0xFF858585),

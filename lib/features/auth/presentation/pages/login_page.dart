@@ -1,7 +1,7 @@
+import 'package:acal/app/app_theme.dart';
 import 'package:acal/shared/validators/app_validators.dart';
 import 'package:flutter/material.dart';
 
-const double _desktopBreakpoint = 800;
 
 class LoginPage extends StatefulWidget {
   const LoginPage({
@@ -88,76 +88,80 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
 
     return Scaffold(
-      backgroundColor: Colors.white,
-      body: SafeArea(
-        child: LayoutBuilder(
-          builder: (context, constraints) {
-            final isDesktop = constraints.maxWidth >= _desktopBreakpoint;
-            final content = _LoginForm(
-              formKey: _formKey,
-              emailController: _emailContoller,
-              passwordController: _passwordController,
-              obscurePassword: _obscurePassword,
-              onTogglePasswordVisibility: () {
-                setState(() {
-                  _obscurePassword = !_obscurePassword;
-                });
-              },
-              onSubmit: _submitLogin,
-              isDesktop: isDesktop,
-              isSubmitting: _isSubmitting,
-            );
-
-            if (!isDesktop) {
-              return Center(
-                child: SingleChildScrollView(
-                  padding: const EdgeInsets.all(24),
-                  child: content,
-                ),
-              );
-            }
-
-            return Center(
-              child: Padding(
-                padding: const EdgeInsets.all(32),
-                child: ConstrainedBox(
-                  constraints: const BoxConstraints(maxWidth: 1180),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: theme.colorScheme.surface,
-                      border: Border.all(
-                        color: theme.colorScheme.outlineVariant,
-                      ),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withValues(alpha: 0.06),
-                          blurRadius: 24,
-                          offset: const Offset(0, 16),
-                        ),
-                      ],
-                    ),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: _LoginBanner(theme: theme),
-                        ),
-                        Expanded(
-                          child: Center(
-                            child: SingleChildScrollView(
-                              padding: const EdgeInsets.all(48),
-                              child: content,
-                            ),
-                          ),
-                        ),
-                      ],
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            colors: [AcalPalette.info300, AcalPalette.info500],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+          ),
+        ),
+        child: SafeArea(
+          child: Center(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 40),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Icon(
+                    Icons.lock_person_rounded,
+                    size: 56,
+                    color: Colors.white,
+                  ),
+                  const SizedBox(height: 12),
+                  Text(
+                    'Acal Panel',
+                    style: theme.textTheme.headlineSmall?.copyWith(
+                      color: Colors.black,
+                      fontWeight: FontWeight.w700,
+                      letterSpacing: 0.5,
                     ),
                   ),
-                ),
+                  const SizedBox(height: 8),
+                  Text(
+                    'Seja bem Vindo',
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      color: Colors.black.withValues(alpha: 0.75),
+                    ),
+                  ),
+                  const SizedBox(height: 40),
+                  ConstrainedBox(
+                    constraints: const BoxConstraints(maxWidth: 420),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: isDark ? theme.colorScheme.surface : Colors.white,
+                        borderRadius: BorderRadius.circular(16),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withValues(alpha: 0.30),
+                            blurRadius: 48,
+                            offset: const Offset(0, 24),
+                          ),
+                        ],
+                      ),
+                      padding: const EdgeInsets.all(40),
+                      child: _LoginForm(
+                        formKey: _formKey,
+                        emailController: _emailContoller,
+                        passwordController: _passwordController,
+                        obscurePassword: _obscurePassword,
+                        onTogglePasswordVisibility: () {
+                          setState(() {
+                            _obscurePassword = !_obscurePassword;
+                          });
+                        },
+                        onSubmit: _submitLogin,
+                        isSubmitting: _isSubmitting,
+                      ),
+                    ),
+                  ),
+                ],
               ),
-            );
-          },
+            ),
+          ),
         ),
       ),
     );
@@ -172,7 +176,6 @@ class _LoginForm extends StatelessWidget {
     required this.obscurePassword,
     required this.onTogglePasswordVisibility,
     required this.onSubmit,
-    required this.isDesktop,
     required this.isSubmitting,
   });
 
@@ -182,21 +185,18 @@ class _LoginForm extends StatelessWidget {
   final bool obscurePassword;
   final VoidCallback onTogglePasswordVisibility;
   final Future<void> Function() onSubmit;
-  final bool isDesktop;
   final bool isSubmitting;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return ConstrainedBox(
-      constraints: BoxConstraints(maxWidth: isDesktop ? 420 : 480),
-      child: Form(
-        key: formKey,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
+    return Form(
+      key: formKey,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
             Text(
               'Entrar',
               style: theme.textTheme.headlineMedium?.copyWith(
@@ -265,60 +265,6 @@ class _LoginForm extends StatelessWidget {
             ),
           ],
         ),
-      ),
-    );
+      );
   }
-}
-
-class _LoginBanner extends StatelessWidget {
-  const _LoginBanner({required this.theme});
-
-  final ThemeData theme;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [
-            theme.colorScheme.primary,
-            theme.colorScheme.primaryContainer,
-          ],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(56),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Icon(
-              Icons.lock_person_rounded,
-              size: 72,
-              color: theme.colorScheme.onPrimary,
-            ),
-            const SizedBox(height: 24),
-            Text(
-              'Acesse com seguranca',
-              style: theme.textTheme.headlineLarge?.copyWith(
-                color: theme.colorScheme.onPrimary,
-                fontWeight: FontWeight.w700,
-              ),
-            ),
-            const SizedBox(height: 16),
-            Text(
-              'Gerencie seu acesso em uma interface pensada para telas grandes, sem comprometer a experiencia no mobile.',
-              style: theme.textTheme.titleMedium?.copyWith(
-                color: theme.colorScheme.onPrimary.withValues(alpha: 0.88),
-                height: 1.5,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
 }

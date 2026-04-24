@@ -189,8 +189,8 @@ flutter emulators --launch Pixel_6
 flutter run -d Pixel_6
 
 -- build web
-fluter build web
-docker build -t alexandreqrz/app-panel-web:latest . 
+flutter build web
+docker build -t alexandreqrz/app-panel-web:latest . &&
 docker push alexandreqrz/app-panel-web:latest
 
 -- build android 
