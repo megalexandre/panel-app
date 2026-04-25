@@ -56,5 +56,7 @@ class DashboardMenuItem {
     'search': Icons.search,
     'receipt_long': Icons.receipt_long,
     'history': Icons.history,
+    'bar_chart': Icons.bar_chart,
+    'manage_search': Icons.manage_search,
   };
 }

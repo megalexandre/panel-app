@@ -1,7 +1,4 @@
 [
-  { "type": "item", "id": "acoes", "label": "Ações", "icon": "bolt" },
-  { "type": "item", "id": "consultas", "label": "Consultas", "icon": "search" },
-  { "type": "header", "label": "Módulos" },
-  { "type": "item", "id": "faturas", "label": "Faturas", "icon": "receipt_long", "hasChildren": true },
-  { "type": "item", "id": "historico", "label": "Histórico e Backup", "icon": "history", "hasChildren": true }
+  { "type": "item", "id": "relatorio", "label": "Relatório", "icon": "bar_chart" },
+  { "type": "item", "id": "consultas", "label": "Consultas", "icon": "manage_search" }
 ]

@@ -1,6 +1,6 @@
 {
-    "name": "acal",
-    "short_name": "acal",
+    "name": "panel",
+    "short_name": "panel",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

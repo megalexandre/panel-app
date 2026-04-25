@@ -3,6 +3,8 @@ import 'package:acal/features/dashboard/domain/dashboard_menu_item.dart';
 import 'package:acal/features/dashboard/presentation/widgets/dashboard_footer.dart';
 import 'package:acal/features/dashboard/presentation/widgets/dashboard_side_menu.dart';
 import 'package:acal/features/dashboard/presentation/widgets/dashboard_top_bar.dart';
+import 'package:acal/features/queries/presentation/pages/queries_page.dart';
+import 'package:acal/features/report/presentation/pages/report_page.dart';
 import 'package:flutter/material.dart';
 
 const double _desktopBreakpoint = 800;
@@ -33,6 +35,12 @@ class _DashboardPageState extends State<DashboardPage> {
     setState(() => _menuItems = items);
   }
 
+  String get _selectedId {
+    final items = _menuItems.where((i) => i.isItem).toList();
+    if (_selectedIndex < 0 || _selectedIndex >= items.length) return '';
+    return items[_selectedIndex].id;
+  }
+
   @override
   Widget build(BuildContext context) {
     final isDesktop = MediaQuery.sizeOf(context).width >= _desktopBreakpoint;
@@ -60,9 +68,15 @@ class _DashboardPageState extends State<DashboardPage> {
               selectedIndex: _selectedIndex,
               onSelect: (i) => setState(() => _selectedIndex = i),
             ),
-          const Expanded(child: SizedBox.shrink()),
+          Expanded(child: _pageForId(_selectedId)),
         ],
       ),
     );
   }
 }
+
+Widget _pageForId(String id) => switch (id) {
+      'relatorio' => const ReportPage(),
+      'consultas' => const QueriesPage(),
+      _ => const SizedBox.shrink(),
+    };
